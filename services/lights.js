@@ -62,9 +62,8 @@ const turnOffAllLights = async (req, res) => {
         // turn on all lights iteratively
         for (let i = 0; i < lightIds.length; i++) {
             const newStatus = false;
-            const response2 = await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
+            await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
         }
-        res.send(lightIds);
     } catch (error) {
         console.log(error);
     }
@@ -79,9 +78,8 @@ const turnOnAllLights = async (req, res) => {
         // turn on all lights iteratively
         for (let i = 0; i < lightIds.length; i++) {
             const newStatus = true;
-            const response2 = await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
+            await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
         }
-        res.send(lightIds);
     } catch (error) {
         console.log(error);
     }
