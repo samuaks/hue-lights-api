@@ -53,9 +53,45 @@ const turnOfforOnAllLights = async (req, res) => {
     }
 }
 
+// turn off all lights
+const turnOffAllLights = async (req, res) => {
+    try {
+        const response = await axios.get(lights);
+        // map json object into array of light ids
+        const lightIds = Object.keys(response.data);
+        // turn on all lights iteratively
+        for (let i = 0; i < lightIds.length; i++) {
+            const newStatus = false;
+            const response2 = await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
+        }
+        res.send(lightIds);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// turn on all lights
+const turnOnAllLights = async (req, res) => {
+    try {
+        const response = await axios.get(lights);
+        // map json object into array of light ids
+        const lightIds = Object.keys(response.data);
+        // turn on all lights iteratively
+        for (let i = 0; i < lightIds.length; i++) {
+            const newStatus = true;
+            const response2 = await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
+        }
+        res.send(lightIds);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     getAllLights: getAllLights,
     getLight: getLight,
     turnOfforOnLight: turnOfforOnLight,
-    turnOfforOnAllLights: turnOfforOnAllLights
+    turnOfforOnAllLights: turnOfforOnAllLights,
+    turnOffAllLights: turnOffAllLights,
+    turnOnAllLights: turnOnAllLights
 }
