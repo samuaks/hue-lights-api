@@ -1,6 +1,7 @@
 const express = require('express');
 const lights = require('./services/lights');
 const wifi = require('./services/wifi');
+const scan = require('./services/devices');
 
 const app = express();
 const port = 3000;
@@ -16,4 +17,6 @@ app.get('/wifi', wifi.listWifi);
 
 app.listen(port, () => {
     console.log('Listen on port ' + port);
+    scan.deviceScanning();
+    setInterval(scan.deviceScanning, 5000);
 })

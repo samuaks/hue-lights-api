@@ -17,6 +17,7 @@ const deviceScanning = () => {
 };
 
 // run deviceScanning every 5 seconds
-setInterval(deviceScanning, 5000);
-
+module.exports = {
+    deviceScanning: deviceScanning
+}
 
