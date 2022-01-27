@@ -33,7 +33,15 @@ io.on('connection', (socket) => {
         io.emit('turn off', msg);
         lights.turnOffAllLights();
         });
+    
+    socket.on('switch', () => {
+        lights.turnOfforOnAllLights().then(res => {
+            console.log('light status: ', res);
+            io.emit('switch', { status: res });
+        })
+    })
 });
+
 
 
 server.listen(port, () => {

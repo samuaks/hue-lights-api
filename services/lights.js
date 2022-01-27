@@ -42,12 +42,13 @@ const turnOfforOnAllLights = async (req, res) => {
         const response = await axios.get(lights);
         // map json object into array of light ids
         const lightIds = Object.keys(response.data);
+        let newStatus = false;
         // turn on all lights iteratively
         for (let i = 0; i < lightIds.length; i++) {
-            const newStatus = response.data[lightIds[i]].state.on ? false : true;
-            const response2 = await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
+            newStatus = response.data[lightIds[i]].state.on ? false : true;
+            await axios.put(`${lights}/${lightIds[i]}/state`, { on: newStatus });
         }
-        res.send(lightIds);
+        return newStatus;
     } catch (error) {
         console.log(error);
     }

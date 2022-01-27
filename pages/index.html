@@ -23,6 +23,11 @@
     >
         Turn off lights
     </button>
+    <button
+        onclick=lightSwitch()
+    >
+        Switch lights
+    </button>
     <script>
         var socket = io();
 
@@ -45,6 +50,11 @@
             document.getElementById('status-state').innerHTML = msg.message;
         });
 
+        socket.on('switch', function(data) {
+            console.log(data.status);
+            document.getElementById('status-state').innerHTML = data.status;
+        });
+
         const turnOn = () => {
             socket.emit('turn on', {
                 message: 'Lights are on'
@@ -55,6 +65,10 @@
             socket.emit('turn off', {
                 message: 'Lights are off'
             });
+        }
+
+        const lightSwitch = () => {
+            socket.emit('switch');
         }
 
     </script>
