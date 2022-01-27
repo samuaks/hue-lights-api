@@ -1,14 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server); 
-const lights = require('./services/lights');
+const lights = require('./services/lights/lights');
 const wifi = require('./services/wifi');
 const scan = require('./services/devices');
 
-const port = 3000;
+const port = process.env.PORT;
 
 
 app.get('/', (req, res) => res.sendFile(__dirname + '/pages/index.html'));

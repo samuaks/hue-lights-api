@@ -1,5 +1,5 @@
 const axios = require('axios');
-const lights = 'http://192.168.100.13/api/kJJv3CYyunKsYOvUV77hzvjXy1iBV8ZQ2CmOEwrC/lights';
+const lights = process.env.BRIDGE_IP;
 
 
 // Get status of all lights
