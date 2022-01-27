@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+  </head>
+  <body>
+      <div class="status">
+        <h1>Status</h1>
+        <div class="status__container">
+          <span id="status-text">Connecting...</span>
+          <span id="status-state"></span>
+        </div>
+      </div>
+    <button
+        onclick=turnOn()
+    >
+        Turn on lights
+    </button>
+    <button
+        onclick=turnOff()
+        
+    >
+        Turn off lights
+    </button>
+    <script>
+        var socket = io();
+
+        socket.on('connect', function() {
+            document.getElementById('status-text').innerHTML = 'Connected';
+        });
+
+        socket.on('disconnect', function() {
+            document.getElementById('status-text').innerHTML = 'Disconnected';
+        });
+
+        socket.on('turn on', function(msg) {
+            console.log(msg.message);
+            document.getElementById('status-state').innerHTML = msg.message;
+
+        });
+
+        socket.on('turn off', function(msg) {
+            console.log(msg.message);
+            document.getElementById('status-state').innerHTML = msg.message;
+        });
+
+        const turnOn = () => {
+            socket.emit('turn on', {
+                message: 'Lights are on'
+            });
+        }
+
+        const turnOff = () => {
+            socket.emit('turn off', {
+                message: 'Lights are off'
+            });
+        }
+
+    </script>
+  </body>
+</html>
