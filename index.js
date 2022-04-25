@@ -4,7 +4,13 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
-const io = new Server(server); 
+const io = new Server(server, {
+    //cors
+    cors: {
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    }
+}); 
 const lights = require('./services/lights/lights');
 const wifi = require('./services/wifi');
 const scan = require('./services/devices');
@@ -20,8 +26,22 @@ app.put('/lights', lights.turnOfforOnAllLights);
 app.get('/wifi', wifi.listWifi);
 
 
+server.listen(port, () => {
+    console.log('Listen on port ' + port);
+    /* scan.deviceScanning();
+    setInterval(scan.deviceScanning, 5000); */
+})
+
+
+
 io.on('connection', (socket) => {
     console.log('a user connected');
+    lights.getAllLightsFunction().then(lights => {
+        console.log(lights);
+        socket.emit('lights', {
+            lights
+        });
+    });
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
@@ -41,12 +61,12 @@ io.on('connection', (socket) => {
             io.emit('switch', { status: res });
         })
     })
+    socket.on('switchId', ({ id: id }) => {
+        lights.turnOfforOnLightFunction(id).then(res => {
+            io.emit('switchId', { status: res, id: id });
+        })
+    })
 });
 
 
 
-server.listen(port, () => {
-    console.log('Listen on port ' + port);
-    /* scan.deviceScanning(); */
-    /* setInterval(scan.deviceScanning, 5000); */
-})

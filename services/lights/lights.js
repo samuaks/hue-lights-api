@@ -6,11 +6,42 @@ const lights = process.env.BRIDGE_IP;
 const getAllLights = async (req, res) => {
     try {
         const response = await axios.get(lights);
-        res.send(response.data);
+        const lightIds = Object.keys(response.data);
+        let lightStatus = [];
+        for (let i = 0; i < lightIds.length; i++) {
+            lightStatus.push({
+                id: lightIds[i],
+                status: response.data[lightIds[i]].state.on
+            });
+        }
+        res.send(lightStatus);
     } catch (error) {
         console.log(error);
     }
 }
+
+// get all lights function
+const getAllLightsFunction = () => {
+    return new Promise((resolve, reject) => {
+        axios.get(lights)
+            .then(response => {
+                const lightIds = Object.keys(response.data);
+                let lightStatus = [];
+                for (let i = 0; i < lightIds.length; i++) {
+                    lightStatus.push({
+                        id: lightIds[i],
+                        status: response.data[lightIds[i]].state.on
+                    });
+                }
+                resolve(lightStatus);
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
+}
+
 
 // get status of one light
 const getLight = async (req, res) => {
@@ -34,6 +65,30 @@ const turnOfforOnLight = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+// turn off or on light function
+const turnOfforOnLightFunction = (lightId) => {
+    return new Promise((resolve, reject) => {
+        // first get the status of the light
+        axios.get(`${lights}/${lightId}`)
+            .then(response => {
+                // change status of the light
+                const newStatus = response.data.state.on ? false : true;
+                axios.put(`${lights}/${lightId}/state`, { on: newStatus })
+                    .then(() => {
+                        resolve(newStatus);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        reject(error);
+                    });
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
 }
 
 // turn on or off all lights
@@ -92,5 +147,7 @@ module.exports = {
     turnOfforOnLight: turnOfforOnLight,
     turnOfforOnAllLights: turnOfforOnAllLights,
     turnOffAllLights: turnOffAllLights,
-    turnOnAllLights: turnOnAllLights
+    turnOnAllLights: turnOnAllLights,
+    getAllLightsFunction: getAllLightsFunction,
+    turnOfforOnLightFunction: turnOfforOnLightFunction
 }
